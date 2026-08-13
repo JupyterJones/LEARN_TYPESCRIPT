@@ -1,0 +1,75 @@
+{
+  "appName": "TS-HACK Cyberpunk Terminal",
+  "exportDate": "2026-08-13T00:37:28.227Z",
+  "userXP": 3800,
+  "nodeProgress": {
+    "1": {
+      "completed": true,
+      "completedAt": "2026-08-13T00:34:02.676Z",
+      "xpEarned": 150,
+      "code": "// DAYLAN ELECTRIC MAYLAR - POWER GRID REFACTOR\n\n// 1. Convert to explicit number type with value 240\nexport const gridVoltage = 240; \n\n// 2. Convert to strict string literal union: \"ONLINE\" | \"OVERLOAD\"\n//export const substationStatus \"ONLINE\" | \"OVERLOAD\" = \"ONLINE\";\nsubstationStatus= 'ONLINE' | 'OVERLOAD' \nexport const substationStatus: = \"ONLINE\";\n// 3. Convert to string or null (allow string | null), initialized to null\nexport const bypassCode = null\n\n// 4. Implement formatPowerNode with explicit parameter and return types\n//port function formatPowerNode(id, kw) {\n//return id + \" [\" + kw + \" kW]\";\n//\nexport function formatPowerNode(id: string, kw: number): string {\n  return id + \" [\" + kw + \" kW]\";\n}\n"
+    },
+    "5": {
+      "completed": true,
+      "completedAt": "2026-08-12T18:49:16.729Z",
+      "xpEarned": 550,
+      "code": "// MARCHEL WATER (DAYTON OHIO) - TYPE GUARDS\n\nexport interface WaterSensor {\n  flowRate: number;\n  psi: number;\n}\n\n// 1. Implement Type Guard for WaterSensor\nexport function isWaterSensor(obj: unknown): obj is WaterSensor {\n  return typeof obj === \"object\" && obj !== null && \"flowRate\" in obj && \"psi\" in obj;\n}\n\n// 2. Implement checkPressure using the Type Guard\nexport function checkPressure(obj: unknown): string {\n  if (isWaterSensor(obj)) {\n    return `PSI: ${obj.psi}`;\n  }\n  return \"INVALID SENSOR\";\n}\n"
+    },
+    "8": {
+      "completed": true,
+      "completedAt": "2026-08-12T18:51:32.296Z",
+      "xpEarned": 500,
+      "code": "// MARKETAL UTILITIES - ASYNC PROMISES\n\nexport interface MarketData {\n  utilityId: string;\n  kwUsage: number;\n}\n\nexport async function fetchMarketData(id: string): Promise<MarketData> {\n  return {\n    utilityId: id,\n    kwUsage: 1250\n  };\n}\n"
+    },
+    "9": {
+      "completed": true,
+      "completedAt": "2026-08-12T18:52:05.301Z",
+      "xpEarned": 750,
+      "code": "// MANILA PHILIPPINES MAINFRAME - SQLITE3 ROW TYPING\n\nexport interface ManilaSqliteRow {\n  id: number;\n  nodeName: string;\n  ipAddress: string;\n  isOnline: boolean;\n}\n\nexport type NewRowDraft = Omit<ManilaSqliteRow, \"id\">;\n\nexport function formatRow(row: ManilaSqliteRow): string {\n  return `[#${row.id}] ${row.nodeName} (${row.ipAddress})`;\n}\n"
+    }
+  },
+  "savedSolutions": {
+    "1": {
+      "code": "// DAYLAN ELECTRIC MAYLAR - POWER GRID REFACTOR\n\n// 1. Convert to explicit number type with value 240\nexport const gridVoltage = 240; \n\n// 2. Convert to strict string literal union: \"ONLINE\" | \"OVERLOAD\"\n//export const substationStatus \"ONLINE\" | \"OVERLOAD\" = \"ONLINE\";\nsubstationStatus= 'ONLINE' | 'OVERLOAD' \nexport const substationStatus: = \"ONLINE\";\n// 3. Convert to string or null (allow string | null), initialized to null\nexport const bypassCode = null\n\n// 4. Implement formatPowerNode with explicit parameter and return types\n//port function formatPowerNode(id, kw) {\n//return id + \" [\" + kw + \" kW]\";\n//\nexport function formatPowerNode(id: string, kw: number): string {\n  return id + \" [\" + kw + \" kW]\";\n}\n",
+      "updatedAt": "2026-08-13T00:34:02.705Z"
+    },
+    "5": {
+      "code": "// MARCHEL WATER (DAYTON OHIO) - TYPE GUARDS\n\nexport interface WaterSensor {\n  flowRate: number;\n  psi: number;\n}\n\n// 1. Implement Type Guard for WaterSensor\nexport function isWaterSensor(obj: unknown): obj is WaterSensor {\n  return typeof obj === \"object\" && obj !== null && \"flowRate\" in obj && \"psi\" in obj;\n}\n\n// 2. Implement checkPressure using the Type Guard\nexport function checkPressure(obj: unknown): string {\n  if (isWaterSensor(obj)) {\n    return `PSI: ${obj.psi}`;\n  }\n  return \"INVALID SENSOR\";\n}\n",
+      "updatedAt": "2026-08-12T18:49:16.729Z"
+    },
+    "8": {
+      "code": "// MARKETAL UTILITIES - ASYNC PROMISES\n\nexport interface MarketData {\n  utilityId: string;\n  kwUsage: number;\n}\n\nexport async function fetchMarketData(id: string): Promise<MarketData> {\n  return {\n    utilityId: id,\n    kwUsage: 1250\n  };\n}\n",
+      "updatedAt": "2026-08-12T18:51:32.296Z"
+    },
+    "9": {
+      "code": "// MANILA PHILIPPINES MAINFRAME - SQLITE3 ROW TYPING\n\nexport interface ManilaSqliteRow {\n  id: number;\n  nodeName: string;\n  ipAddress: string;\n  isOnline: boolean;\n}\n\nexport type NewRowDraft = Omit<ManilaSqliteRow, \"id\">;\n\nexport function formatRow(row: ManilaSqliteRow): string {\n  return `[#${row.id}] ${row.nodeName} (${row.ipAddress})`;\n}\n",
+      "updatedAt": "2026-08-12T18:52:05.302Z"
+    }
+  },
+  "ollamaChatHistory": [
+    {
+      "sender": "USER",
+      "text": "are you there ?",
+      "timestamp": "2026-08-13T00:04:20.430Z"
+    },
+    {
+      "sender": "llama3.2:3b",
+      "text": "Affirmative. I am CyberDeck TS-AI. What's your query about TypeScript?",
+      "timestamp": "2026-08-13T00:04:20.488Z"
+    },
+    {
+      "sender": "USER",
+      "text": "// 2. Convert to strict string literal union: \"ONLINE\" | \"OVERLOAD\"\nexport const substationStatus \"ONLINE\" | \"OVERLOAD\" = \"ONLINE\";\n\nTo convert the given code to a strict string literal union",
+      "timestamp": "2026-08-13T00:25:38.603Z"
+    },
+    {
+      "sender": "llama3.2:3b",
+      "text": "You're close, but not quite there!\n\nThe issue is that you've assigned `\"ONLINE\"` to `substationStatus` which is initially set as a union of `\"ONLINE\"` and `\"OVERLOAD\"`. To fix this, let's update the type declaration:\n\n```typescript\n// Define the strict string literal union\ntype SubstationStatus = \"ONLINE\" | \"OVERLOAD\";\n\nexport const substationStatus: SubstationStatus = \"ONLINE\";\n```\n\nBy using a separate `SubstationStatus` type alias, we ensure that `substationStatus` adheres to the strict string literal union definition. Now, you can safely assign `\"ONLINE\"` (or `\"OVERLOAD\"`) to `substationStatus`, and TypeScript will enforce it as a valid value within the union.",
+      "timestamp": "2026-08-13T00:25:38.603Z"
+    }
+  ],
+  "ollamaConfig": {
+    "host": "http://localhost:11434",
+    "model": "llama3.2:3b"
+  }
+}

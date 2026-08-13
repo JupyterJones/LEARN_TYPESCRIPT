@@ -1,0 +1,95 @@
+{
+  "appName": "TS-HACK Cyberpunk Terminal",
+  "playerProfile": "jack1",
+  "exportDate": "2026-08-13T03:05:46.121Z",
+  "userXP": 4150,
+  "nodeProgress": {
+    "1": {
+      "completed": true,
+      "completedAt": "2026-08-13T03:02:48.368Z",
+      "xpEarned": 100,
+      "code": "// DAYLAN ELECTRIC MAYLAR — UN-TYPED LEGACY CODE\n// Fix variable declarations with explicit TypeScript types!\n\nexport const vaultId: number = 2049;\nexport const sectorName: string = \"Dayton Substation\";\nexport const isGridOnline: boolean = true;\nexport const voltageLevels: number[] = [120, 240, 480];\n"
+    },
+    "2": {
+      "completed": true,
+      "completedAt": "2026-08-13T03:02:42.799Z",
+      "xpEarned": 150,
+      "code": "// MARCHEL WATER WORKS — UN-TYPED SENSOR DATA\n// Define the WaterSensor interface and export activeSensor!\n\nexport interface WaterSensor {\n  readonly id: number;\n  location: string;\n  psi: number;\n  alertMessage?: string;\n}\n\nexport const activeSensor: WaterSensor = {\n  id: 108,\n  location: \"Dayton Reservoir Vault A\",\n  psi: 14.7\n};\n"
+    },
+    "3": {
+      "completed": true,
+      "completedAt": "2026-08-13T03:02:57.486Z",
+      "xpEarned": 200,
+      "code": "// MARKETAL UTILITIES — UN-TYPED PACKET ROUTER\n// Implement generic TelemetryPacket<T> and wrapTelemetry<T>()!\n\nexport interface TelemetryPacket<T> {\n  timestamp: string;\n  payload: T;\n}\n\nexport function wrapTelemetry<T>(data: T): TelemetryPacket<T> {\n  return {\n    timestamp: new Date().toISOString(),\n    payload: data\n  };\n}\n"
+    },
+    "4": {
+      "completed": true,
+      "completedAt": "2026-08-13T03:03:04.466Z",
+      "xpEarned": 250,
+      "code": "// SQLITE3 DATABASE MAPPER — NOTES.DB INTERCEPT\n// Define SqliteNote interface and write parseNoteRow mapper!\n\nexport interface SqliteNote {\n  id: number;\n  title: string;\n  content: string;\n  tags?: string;\n  created_at: string;\n}\n\nexport function parseNoteRow(row: any): SqliteNote {\n  return {\n    id: row.id,\n    title: row.title || \"Untitled\",\n    content: row.content || \"\",\n    tags: row.tags,\n    created_at: row.created_at || new Date().toISOString()\n  };\n}\n"
+    },
+    "5": {
+      "completed": true,
+      "completedAt": "2026-08-13T03:03:13.524Z",
+      "xpEarned": 300,
+      "code": "// JSON SCHEMA VALIDATOR\n// Implement type predicate isValidNoteConfig(obj: any): obj is NoteConfig!\n\nexport interface NoteConfig {\n  theme: string;\n  autoSave: boolean;\n}\n\nexport function isValidNoteConfig(obj: any): obj is NoteConfig {\n  return typeof obj === \"object\" && obj !== null && typeof obj.theme === \"string\" && typeof obj.autoSave === \"boolean\";\n}\n"
+    },
+    "6": {
+      "completed": true,
+      "completedAt": "2026-08-13T03:03:24.691Z",
+      "xpEarned": 350,
+      "code": "// STRICT NULL HANDLING — SQLITE COLUMN SANITIZER\n// Implement sanitizeColumn and formatTagList!\n\nexport function sanitizeColumn(val: string | null | undefined): string {\n  return val ?? \"N/A\";\n}\n\nexport function formatTagList(tags: string | null): string[] {\n  if (!tags) return [];\n  return tags.split(\",\").map(t => t.trim());\n}\n"
+    },
+    "7": {
+      "completed": true,
+      "completedAt": "2026-08-13T03:03:31.996Z",
+      "xpEarned": 400,
+      "code": "// ASYNC REST PROMISES — NETWORK INTERCEPT\n// Implement ApiResponse<T> and async fetchData<T>()!\n\nexport interface ApiResponse<T> {\n  status: number;\n  data: T;\n}\n\nexport async function fetchData<T>(mockData: T): Promise<ApiResponse<T>> {\n  return {\n    status: 200,\n    data: mockData\n  };\n}\n"
+    },
+    "9": {
+      "completed": true,
+      "completedAt": "2026-08-13T03:03:57.894Z",
+      "xpEarned": 500,
+      "code": "// MANILA TELECOM HUB — UTILITY TYPES OMIT & PARTIAL\n// Create TelecomHub interface, PublicHubInfo type, and HubPatch type!\n\nexport interface TelecomHub {\n  id: number;\n  city: string;\n  bandwidthGbps: number;\n  secretKey: string;\n}\n\nexport type PublicHubInfo = Omit<TelecomHub, \"secretKey\">;\nexport type HubPatch = Partial<TelecomHub>;\n\nexport const sampleHub: PublicHubInfo = {\n  id: 707,\n  city: \"Manila\",\n  bandwidthGbps: 10000\n};\n"
+    }
+  },
+  "savedSolutions": {
+    "1": {
+      "code": "// DAYLAN ELECTRIC MAYLAR — UN-TYPED LEGACY CODE\n// Fix variable declarations with explicit TypeScript types!\n\nexport const vaultId: number = 2049;\nexport const sectorName: string = \"Dayton Substation\";\nexport const isGridOnline: boolean = true;\nexport const voltageLevels: number[] = [120, 240, 480];\n",
+      "updatedAt": "2026-08-13T03:02:48.368Z"
+    },
+    "2": {
+      "code": "// MARCHEL WATER WORKS — UN-TYPED SENSOR DATA\n// Define the WaterSensor interface and export activeSensor!\n\nexport interface WaterSensor {\n  readonly id: number;\n  location: string;\n  psi: number;\n  alertMessage?: string;\n}\n\nexport const activeSensor: WaterSensor = {\n  id: 108,\n  location: \"Dayton Reservoir Vault A\",\n  psi: 14.7\n};\n",
+      "updatedAt": "2026-08-13T03:02:42.800Z"
+    },
+    "3": {
+      "code": "// MARKETAL UTILITIES — UN-TYPED PACKET ROUTER\n// Implement generic TelemetryPacket<T> and wrapTelemetry<T>()!\n\nexport interface TelemetryPacket<T> {\n  timestamp: string;\n  payload: T;\n}\n\nexport function wrapTelemetry<T>(data: T): TelemetryPacket<T> {\n  return {\n    timestamp: new Date().toISOString(),\n    payload: data\n  };\n}\n",
+      "updatedAt": "2026-08-13T03:02:57.486Z"
+    },
+    "4": {
+      "code": "// SQLITE3 DATABASE MAPPER — NOTES.DB INTERCEPT\n// Define SqliteNote interface and write parseNoteRow mapper!\n\nexport interface SqliteNote {\n  id: number;\n  title: string;\n  content: string;\n  tags?: string;\n  created_at: string;\n}\n\nexport function parseNoteRow(row: any): SqliteNote {\n  return {\n    id: row.id,\n    title: row.title || \"Untitled\",\n    content: row.content || \"\",\n    tags: row.tags,\n    created_at: row.created_at || new Date().toISOString()\n  };\n}\n",
+      "updatedAt": "2026-08-13T03:03:04.466Z"
+    },
+    "5": {
+      "code": "// JSON SCHEMA VALIDATOR\n// Implement type predicate isValidNoteConfig(obj: any): obj is NoteConfig!\n\nexport interface NoteConfig {\n  theme: string;\n  autoSave: boolean;\n}\n\nexport function isValidNoteConfig(obj: any): obj is NoteConfig {\n  return typeof obj === \"object\" && obj !== null && typeof obj.theme === \"string\" && typeof obj.autoSave === \"boolean\";\n}\n",
+      "updatedAt": "2026-08-13T03:03:13.524Z"
+    },
+    "6": {
+      "code": "// STRICT NULL HANDLING — SQLITE COLUMN SANITIZER\n// Implement sanitizeColumn and formatTagList!\n\nexport function sanitizeColumn(val: string | null | undefined): string {\n  return val ?? \"N/A\";\n}\n\nexport function formatTagList(tags: string | null): string[] {\n  if (!tags) return [];\n  return tags.split(\",\").map(t => t.trim());\n}\n",
+      "updatedAt": "2026-08-13T03:03:24.691Z"
+    },
+    "7": {
+      "code": "// ASYNC REST PROMISES — NETWORK INTERCEPT\n// Implement ApiResponse<T> and async fetchData<T>()!\n\nexport interface ApiResponse<T> {\n  status: number;\n  data: T;\n}\n\nexport async function fetchData<T>(mockData: T): Promise<ApiResponse<T>> {\n  return {\n    status: 200,\n    data: mockData\n  };\n}\n",
+      "updatedAt": "2026-08-13T03:03:31.996Z"
+    },
+    "9": {
+      "code": "// MANILA TELECOM HUB — UTILITY TYPES OMIT & PARTIAL\n// Create TelecomHub interface, PublicHubInfo type, and HubPatch type!\n\nexport interface TelecomHub {\n  id: number;\n  city: string;\n  bandwidthGbps: number;\n  secretKey: string;\n}\n\nexport type PublicHubInfo = Omit<TelecomHub, \"secretKey\">;\nexport type HubPatch = Partial<TelecomHub>;\n\nexport const sampleHub: PublicHubInfo = {\n  id: 707,\n  city: \"Manila\",\n  bandwidthGbps: 10000\n};\n",
+      "updatedAt": "2026-08-13T03:03:57.894Z"
+    }
+  },
+  "ollamaChatHistory": [],
+  "ollamaConfig": {
+    "host": "http://localhost:11434",
+    "model": "deepseek-slerp:1"
+  }
+}

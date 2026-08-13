@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TS-HACK // Cyberpunk TypeScript Mainframe Simulator</title>
+  <meta name="description" content="Master strict TypeScript by hacking legacy JavaScript mainframes, solving type challenges, and chatting with local Ollama AI models in a Cyberpunk terminal interface.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="vendor/codemirror.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Canvas Matrix Rain Background -->
+  <canvas id="matrix-canvas"></canvas>
+  <div class="crt-overlay" id="crt-overlay"></div>
+
+  <div id="app-container">
+    <!-- Top Cyber Navbar / Status Bar -->
+    <header class="cyber-header">
+      <div class="header-left">
+        <div class="logo-box">
+          <span class="logo-glitch" data-text="TS-HACK">TS-HACK</span>
+          <span class="logo-sub">v2.0.46 // MAINFRAME_TERMINAL</span>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="node-progress-summary">
+          <span class="label">MAINFRAME BREACHED:</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="overall-progress-bar" style="width: 0%;"></div>
+          </div>
+          <span class="progress-text" id="overall-progress-text">0 / 6 NODES</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="stat-badge profile-badge" id="btn-profile-mgr" title="Active Player Profile (Click to Switch or Create Alias)">
+          <span class="icon">👤</span>
+          <span id="active-player-display">PLAYER: JACK1</span>
+        </div>
+
+        <div class="stat-badge" title="Cyber Credits Earned">
+          <span class="icon">⚡</span>
+          <span id="stat-xp">0 CR</span>
+        </div>
+
+        <div class="stat-badge ollama-status-badge" id="ollama-status-btn" title="Ollama AI Server Status">
+          <span class="status-dot disconnected" id="ollama-dot"></span>
+          <span id="ollama-header-text">Ollama: Offline</span>
+        </div>
+
+        <select id="kokoro-voice-select" class="cyber-select-mini" title="Kokoro Voice Profile">
+          <option value="af_heart">Kokoro: Heart ♀</option>
+          <option value="af_bella">Kokoro: Bella ♀</option>
+          <option value="am_adam">Kokoro: Adam ♂</option>
+          <option value="bf_emma">Kokoro: Emma 🇬🇧</option>
+        </select>
+
+        <button class="btn-cyber btn-small btn-outline" id="btn-toggle-tts" title="Toggle Master TTS Audio Mute">
+          <span id="tts-label">🗣️ TTS: ON</span>
+        </button>
+
+        <button class="icon-btn" id="btn-toggle-sound" title="Toggle Synthesized Audio FX">
+          <span id="sound-icon">🔊</span>
+        </button>
+
+        <button class="icon-btn" id="btn-toggle-crt" title="Toggle CRT Scanline Effect">
+          <span id="crt-icon">📺</span>
+        </button>
+
+        <button class="btn-cyber btn-small btn-accent" id="btn-export-records" title="Export Session Records">
+          💾 EXPORT LOGS
+        </button>
+      </div>
+    </header>
+
+    <!-- Main CyberDeck Layout -->
+    <main class="cyber-workspace">
+      
+      <!-- Left Panel: Node Topology Map & Mission Select -->
+      <aside class="workspace-sidebar" id="sidebar-nodes">
+        <div class="panel-header">
+          <h3><span class="bracket">[</span> SYSTEM MAP <span class="bracket">]</span></h3>
+          <span class="badge" id="node-count-badge">6 NODES</span>
+        </div>
+        
+        <div class="node-list" id="node-list-container">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <!-- System Stats Box -->
+        <div class="system-stats-card">
+          <h4>CYBERDECK SPECS</h4>
+          <div class="stat-row">
+            <span>STRICT MODE:</span>
+            <span class="value-highlight">ACTIVE</span>
+          </div>
+          <div class="stat-row">
+            <span>TYPE ENGINE:</span>
+            <span class="value-highlight">TS v5.4.0</span>
+          </div>
+          <div class="stat-row">
+            <span>OLLAMA MODEL:</span>
+            <span class="value-highlight" id="current-model-display">AUTO/OFFLINE</span>
+          </div>
+          <div class="stat-row">
+            <span>RECORD VAULT:</span>
+            <span class="value-highlight" id="records-saved-count">0 LOGS</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center Content Area: Tabbed Windows / IDE & Terminal -->
+      <section class="workspace-main">
+        
+        <!-- Tab Controls -->
+        <nav class="cyber-tabs">
+          <button class="tab-btn active" data-tab="ide-view">
+            <span class="tab-icon">💻</span> IDE & CODE EDITOR
+          </button>
+          <button class="tab-btn" data-tab="sandbox-view">
+            <span class="tab-icon">🧪</span> TS SANDBOX PLAYGROUND
+          </button>
+          <button class="tab-btn" data-tab="codex-view">
+            <span class="tab-icon">📖</span> CYBER CODEX
+          </button>
+          <button class="tab-btn" data-tab="terminal-view">
+            <span class="tab-icon">📟</span> CYBER TERMINAL
+          </button>
+          <button class="tab-btn" data-tab="ollama-view">
+            <span class="tab-icon">🤖</span> OLLAMA AI ASSISTANT
+            <span class="badge-mini" id="ollama-tab-badge">LOCAL</span>
+          </button>
+          <button class="tab-btn" data-tab="camera-view">
+            <span class="tab-icon">📹</span> SECURITY CAM FEED
+          </button>
+          <button class="tab-btn" data-tab="notes-view">
+            <span class="tab-icon">📝</span> SQLITE3 NOTEPAD
+          </button>
+          <button class="tab-btn" data-tab="records-view">
+            <span class="tab-icon">📁</span> RECORD VAULT
+          </button>
+        </nav>
+
+        <!-- View 1: IDE Code Editor & Mission Briefing -->
+        <div class="tab-content active" id="ide-view">
+          <div class="ide-layout">
+            
+            <!-- Briefing / Requirements Card -->
+            <div class="briefing-panel">
+              <div class="briefing-header">
+                <span class="node-tag" id="current-node-tag">NODE 01</span>
+                <h2 id="current-node-title">Primitive Vault & Strict Nulls</h2>
+                <span class="difficulty-tag" id="current-node-diff">EASY</span>
+              </div>
+
+              <div class="briefing-body">
+                <p id="current-node-desc">
+                  Loading mainframe mission instructions...
+                </p>
+                
+                <div class="lore-box">
+                  <span class="lore-title">⚠️ SYSTEM ALERT</span>
+                  <p id="current-node-lore">Infiltrate the mainframe by converting weak dynamic JavaScript variables into explicit TypeScript primitives.</p>
+                </div>
+
+                <div class="concept-card">
+                  <h4>💡 KEY TYPESCRIPT CONCEPT</h4>
+                  <div id="current-node-concept">
+                    <!-- Concept summary -->
+                  </div>
+                </div>
+
+                <div class="objectives-box">
+                  <h4>TARGET PROTOCOLS</h4>
+                  <ul id="current-node-objectives">
+                    <!-- Objectives -->
+                  </ul>
+                </div>
+              </div>
+
+              <div class="briefing-actions">
+                <button class="btn-cyber btn-primary" id="btn-read-briefing-tts">
+                  🔊 SPEAK BRIEFING ALOUD
+                </button>
+                <button class="btn-cyber btn-outline" id="btn-get-hint">
+                  💡 REQUEST HINT
+                </button>
+                <button class="btn-cyber btn-outline" id="btn-ask-ollama-hint">
+                  🤖 ASK OLLAMA MODEL
+                </button>
+                <button class="btn-cyber btn-outline btn-warning" id="btn-reset-code">
+                  🔄 RESET CODE
+                </button>
+              </div>
+            </div>
+
+            <!-- Code Editor Panel -->
+            <div class="editor-panel">
+              <div class="editor-header">
+                <div class="file-name">
+                  <span class="file-icon">📄</span>
+                  <span id="current-filename">solution.ts</span>
+                </div>
+                <div class="editor-status" id="editor-type-status">
+                  <span class="status-dot idle"></span> READY TO COMPILE
+                </div>
+              </div>
+
+              <!-- CodeMirror Production Code Editor -->
+              <div class="editor-body">
+                <textarea id="code-editor-target"></textarea>
+              </div>
+
+              <!-- Action Bar & Diagnostics -->
+              <div class="editor-footer">
+                <div class="footer-left">
+                  <button class="btn-cyber btn-secondary" id="btn-check-types">
+                    🔍 CHECK TYPES
+                  </button>
+                  <button class="btn-cyber btn-primary" id="btn-submit-solution">
+                    ⚡ BREACH MAINFRAME
+                  </button>
+                </div>
+                <div class="footer-right">
+                  <span id="compiler-time">0 ms</span>
+                </div>
+              </div>
+
+              <!-- Diagnostic Console Output -->
+              <div class="console-output" id="console-output">
+                <div class="console-header">
+                  <span>TERMINAL DIAGNOSTICS</span>
+                  <button class="btn-text" id="btn-clear-console">CLEAR</button>
+                </div>
+                <div class="console-logs" id="console-logs">
+                  <div class="log-line info">[SYSTEM]: CyberDeck TypeScript compilation environment initialized. Select a node to breach.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- View 1.5: TS Sandbox Playground -->
+        <div class="tab-content" id="sandbox-view">
+          <div class="sandbox-layout">
+            <div class="sandbox-header-card">
+              <div class="sandbox-info">
+                <h2>🧪 TYPESCRIPT SANDBOX PLAYGROUND</h2>
+                <p>Write, experiment, and compile custom TypeScript code at your own relaxed pace.</p>
+              </div>
+              <div class="sandbox-presets">
+                <button class="btn-cyber btn-small btn-outline" id="btn-preset-primitives">Primitives</button>
+                <button class="btn-cyber btn-small btn-outline" id="btn-preset-interface">Interface</button>
+                <button class="btn-cyber btn-small btn-outline" id="btn-preset-generics">Generics &lt;T&gt;</button>
+                <button class="btn-cyber btn-small btn-outline" id="btn-preset-sqlite">SQLite Rows</button>
+                <button class="btn-cyber btn-small btn-outline" id="btn-preset-async">Async Promises</button>
+              </div>
+            </div>
+
+            <div class="sandbox-editor-panel">
+              <div class="editor-header">
+                <span class="file-icon">📄</span>
+                <span>sandbox_playground.ts</span>
+                <button class="btn-cyber btn-small btn-primary" id="btn-run-sandbox">
+                  ⚡ COMPILE & CHECK TYPES
+                </button>
+              </div>
+              <div class="editor-body">
+                <textarea id="sandbox-editor-target"></textarea>
+              </div>
+              <div class="sandbox-console-panel">
+                <div class="console-header">
+                  <span>LIVE DIAGNOSTIC OUTPUT</span>
+                  <button class="btn-text" id="btn-clear-sandbox-console">CLEAR</button>
+                </div>
+                <div class="console-logs" id="sandbox-console-logs">
+                  <div class="log-line info">[SANDBOX]: TypeScript sandbox ready. Type custom code or click a preset template above!</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View 1.6: Interactive Cyber Codex -->
+        <div class="tab-content" id="codex-view">
+          <div class="codex-layout">
+            <div class="codex-header-card">
+              <h2>📖 THE CYBER CODEX — TYPESCRIPT REFERENCE MANUAL</h2>
+              <p>Interactive reference guide with clear explanations and copyable code examples for all major TypeScript concepts.</p>
+            </div>
+
+            <div class="codex-grid">
+              <div class="codex-card">
+                <div class="codex-card-header">
+                  <h3>1. Primitives & Explicit Types</h3>
+                  <button class="btn-cyber btn-small btn-outline" data-copy-codex="1">📋 COPY TO SANDBOX</button>
+                </div>
+                <p>TypeScript allows explicitly annotating variables with <code>number</code>, <code>string</code>, <code>boolean</code>, and array signatures.</p>
+                <pre class="codex-code">export const serverPort: number = 8080;
+export const locationName: string = "Dayton, Ohio";
+export const isOnline: boolean = true;
+export const portList: number[] = [8080, 8880, 11434];</pre>
+              </div>
+
+              <div class="codex-card">
+                <div class="codex-card-header">
+                  <h3>2. Interfaces & Modifiers</h3>
+                  <button class="btn-cyber btn-small btn-outline" data-copy-codex="2">📋 COPY TO SANDBOX</button>
+                </div>
+                <p>Define object contracts with <code>interface</code>. Mark immutable properties with <code>readonly</code> and optional fields with <code>?</code>.</p>
+                <pre class="codex-code">export interface WaterSensor {
+  readonly id: number;
+  location: string;
+  psi: number;
+  alertMessage?: string;
+}</pre>
+              </div>
+
+              <div class="codex-card">
+                <div class="codex-card-header">
+                  <h3>3. Generics &lt;T&gt;</h3>
+                  <button class="btn-cyber btn-small btn-outline" data-copy-codex="3">📋 COPY TO SANDBOX</button>
+                </div>
+                <p>Generics preserve exact payload types using placeholder type parameters <code>&lt;T&gt;</code>.</p>
+                <pre class="codex-code">export interface TelemetryPacket&lt;T&gt; {
+  timestamp: string;
+  payload: T;
+}
+
+export function wrapPacket&lt;T&gt;(data: T): TelemetryPacket&lt;T&gt; {
+  return { timestamp: new Date().toISOString(), payload: data };
+}</pre>
+              </div>
+
+              <div class="codex-card">
+                <div class="codex-card-header">
+                  <h3>4. SQLite Database Row Typing</h3>
+                  <button class="btn-cyber btn-small btn-outline" data-copy-codex="4">📋 COPY TO SANDBOX</button>
+                </div>
+                <p>Map raw SQLite3 query columns to strongly typed interfaces to eliminate <code>any</code> in backend data pipelines.</p>
+                <pre class="codex-code">export interface SqliteNote {
+  id: number;
+  title: string;
+  content: string;
+  tags?: string;
+  created_at: string;
+}
+
+export function parseRow(row: any): SqliteNote {
+  return { id: row.id, title: row.title, content: row.content, created_at: row.created_at };
+}</pre>
+              </div>
+
+              <div class="codex-card">
+                <div class="codex-card-header">
+                  <h3>5. Async Promises & REST APIs</h3>
+                  <button class="btn-cyber btn-small btn-outline" data-copy-codex="5">📋 COPY TO SANDBOX</button>
+                </div>
+                <p>Wrap asynchronous <code>fetch()</code> operations in strongly typed <code>Promise&lt;T&gt;</code> objects.</p>
+                <pre class="codex-code">export interface ApiResponse&lt;T&gt; {
+  status: number;
+  data: T;
+}
+
+export async function fetchNotes(): Promise&lt;ApiResponse&lt;string[]&gt;&gt; {
+  return { status: 200, data: ["Note 1", "Note 2"] };
+}</pre>
+              </div>
+
+              <div class="codex-card">
+                <div class="codex-card-header">
+                  <h3>6. Utility Types: Pick, Omit & Partial</h3>
+                  <button class="btn-cyber btn-small btn-outline" data-copy-codex="6">📋 COPY TO SANDBOX</button>
+                </div>
+                <p>Derive new type variants using TypeScript's built-in <code>Omit</code>, <code>Pick</code>, and <code>Partial</code> utilities.</p>
+                <pre class="codex-code">export interface UserProfile {
+  id: number;
+  username: string;
+  passwordHash: string;
+  email: string;
+}
+
+export type PublicUser = Omit&lt;UserProfile, 'passwordHash'&gt;;
+export type ProfilePatch = Partial&lt;UserProfile&gt;;</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View 2: CLI Terminal View -->
+        <div class="tab-content" id="terminal-view">
+          <div class="terminal-container">
+            <div class="terminal-bar">
+              <div class="term-dots">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+              </div>
+              <span class="term-title">bash -- cyberdeck@mainframe:~/ts-hack</span>
+            </div>
+            
+            <div class="terminal-body" id="terminal-body">
+              <div class="term-welcome">
+                <pre class="ascii-logo">
+ _____ ____    _   _    _  ____ _  __
+|_ _/ ___|  | | | |  / \|  _ \ |/ /
+ | |\___ \  | |_| | / _ \ |_) | ' / 
+ | | ___) | |  _  |/ ___ \|  __/ . \ 
+|___|____/  |_| |_/_/   \_\_|  |_|\_\
+======================================
+CYBERPUNK TYPESCRIPT MAINFRAME HACKER
+Type 'help' for command manual or 'scan' to list targets.
+                </pre>
+              </div>
+              <div class="term-history" id="term-history"></div>
+              
+              <div class="term-input-line">
+                <span class="term-prompt">cyberdeck@root:~$</span>
+                <input type="text" id="term-input" autocomplete="off" spellcheck="false" placeholder="Type a command (e.g. help, scan, hack 1, ts-check, ollama)...">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View 3: Ollama AI Assistant -->
+        <div class="tab-content" id="ollama-view">
+          <div class="ollama-container">
+            <!-- Ollama Config Bar -->
+            <div class="ollama-config-card">
+              <div class="config-row">
+                <div class="config-field">
+                  <label for="ollama-url-input">OLLAMA HOST API:</label>
+                  <input type="text" id="ollama-url-input" value="http://localhost:11434" placeholder="http://localhost:11434">
+                </div>
+                
+                <button class="btn-cyber btn-secondary" id="btn-connect-ollama">
+                  🔌 TEST CONNECTION
+                </button>
+
+                <div class="config-field">
+                  <label for="ollama-model-select">ACTIVE OLLAMA MODEL:</label>
+                  <select id="ollama-model-select" disabled>
+                    <option value="">Searching local models...</option>
+                  </select>
+                </div>
+
+                <button class="btn-cyber btn-outline" id="btn-refresh-models">
+                  🔄 REFRESH MODELS
+                </button>
+              </div>
+
+              <div class="ollama-status-banner" id="ollama-banner">
+                <span class="icon">ℹ️</span>
+                <span id="ollama-banner-text">Ollama connects to your local machine (`http://localhost:11434`). Make sure Ollama is running (`ollama serve`) to enable local model chats and hint generation.</span>
+              </div>
+            </div>
+
+            <!-- Chat Window -->
+            <div class="ollama-chat-card">
+              <div class="chat-header">
+                <div class="chat-title">
+                  <span class="icon">🤖</span>
+                  <span id="active-chat-model-name">OLLAMA AI TS MENTOR</span>
+                </div>
+                <div class="chat-actions">
+                  <button class="btn-cyber btn-small btn-outline" id="btn-clear-chat">
+                    🧹 CLEAR CHAT
+                  </button>
+                  <button class="btn-cyber btn-small btn-outline" id="btn-save-chat-log">
+                    💾 SAVE LOG
+                  </button>
+                </div>
+              </div>
+
+              <div class="chat-messages" id="chat-messages">
+                <div class="chat-msg system">
+                  <div class="msg-author">CYBERDECK SYSTEM</div>
+                  <div class="msg-text">Ollama AI assistant initialized. Select your local Ollama model above or type a question below to analyze TypeScript type errors, generate hint prompts, or brainstorm code refactoring strategies.</div>
+                </div>
+              </div>
+
+              <div class="chat-input-area">
+                <textarea id="chat-input" placeholder="Ask your Ollama model about TypeScript types, generics, or how to pass Node challenges..." rows="2"></textarea>
+                <button class="btn-cyber btn-primary" id="btn-send-chat">
+                  SEND ⚡
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View 4: Live Security Camera Feed -->
+        <div class="tab-content" id="camera-view">
+          <div class="camera-container">
+            <div class="camera-header-card">
+              <div class="cam-info">
+                <h2>📹 LIVE MAINFRAME SURVEILLANCE FEED</h2>
+                <p id="cam-subheading">CAM 01 // DAYLAN ELECTRIC POWER VAULT (DAYTON, OH)</p>
+              </div>
+              <div class="cam-actions">
+                <button class="btn-cyber btn-primary" id="btn-refresh-cam">
+                  ⚡ RE-SCAN FEED
+                </button>
+                <button class="btn-cyber btn-outline" id="btn-toggle-nv">
+                  🟢 NIGHT VISION
+                </button>
+              </div>
+            </div>
+            
+            <div class="camera-feed-viewport" id="cam-viewport">
+              <img src="assets/camera_feed.jpg" alt="Security Camera Live Feed" class="cam-feed-img" id="cam-feed-img">
+              <div class="cam-hud-overlay">
+                <div class="hud-top">
+                  <span class="rec-dot">● REC</span>
+                  <span id="cam-hud-location">CAM 01 // DAYLAN ELECTRIC MAYLAR</span>
+                  <span id="cam-hud-status" class="hud-green">STATUS: [UNAUTHORIZED]</span>
+                </div>
+                <div class="hud-crosshair"></div>
+                <div class="hud-bottom">
+                  <span id="cam-timestamp">2042-09-02 23:47:18 GMT</span>
+                  <span id="cam-hud-objective">NEXT TARGET: [TYPE COMPILATION REQUIRED]</span>
+                  <span class="hud-green">SIGNAL: 100% INTERCEPTED</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View 5: Cyber Notepad & SQLite3 DB -->
+        <div class="tab-content" id="notes-view">
+          <div class="notes-container">
+            <div class="notes-header-card">
+              <div class="notes-info">
+                <h2>📝 CYBER NOTEPAD (SQLITE3 DATABASE)</h2>
+                <p>Notes typed here are saved directly to local database file (<code>notes.db</code>). Later you can practice writing TypeScript interfaces to query and read them!</p>
+              </div>
+              <div class="notes-status-badge">
+                <span class="status-dot connected"></span>
+                <span>SQLITE3: notes.db</span>
+              </div>
+            </div>
+
+            <div class="notes-layout">
+              <!-- Note Form -->
+              <div class="note-editor-card">
+                <div class="form-row">
+                  <input type="text" id="note-title-input" placeholder="Note Title (e.g. Generics Study Notes)..." autocomplete="off">
+                  <input type="text" id="note-tags-input" placeholder="Tags (e.g. ts, generics)..." value="ts-study">
+                </div>
+
+                <textarea id="note-content-input" placeholder="Write your hacker notes or TypeScript code snippets here..." rows="10"></textarea>
+
+                <div class="form-actions">
+                  <button class="btn-cyber btn-primary" id="btn-save-sqlite-note">
+                    💾 SAVE TO SQLITE3 DB
+                  </button>
+                  <button class="btn-cyber btn-secondary" id="btn-copy-ts-interface">
+                    📋 COPY TYPESCRIPT NOTE INTERFACE
+                  </button>
+                </div>
+              </div>
+
+              <!-- Saved Notes List -->
+              <div class="saved-notes-card">
+                <div class="saved-notes-header">
+                  <h3>SAVED SQLITE3 RECORDS</h3>
+                  <button class="btn-small btn-cyber btn-outline" id="btn-refresh-notes">🔄 REFRESH</button>
+                </div>
+                <div class="notes-list" id="sqlite-notes-list">
+                  <p class="empty-state">Loading notes from SQLite3 database...</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- View 6: Record Vault & Session Exporter -->
+        <div class="tab-content" id="records-view">
+          <div class="records-container">
+            <div class="records-header-card">
+              <div class="records-info">
+                <h2>SESSION RECORDS & CHALLENGE LOGS</h2>
+                <p>All completed mainframe breaches, saved TypeScript solutions, score history, and Ollama chat logs are recorded here.</p>
+              </div>
+              <div class="records-actions">
+                <button class="btn-cyber btn-primary" id="btn-download-json">
+                  📥 DOWNLOAD JSON REPORT
+                </button>
+                <button class="btn-cyber btn-secondary" id="btn-download-md">
+                  📝 DOWNLOAD MARKDOWN REPORT
+                </button>
+                <button class="btn-cyber btn-warning" id="btn-clear-all-records">
+                  🗑️ CLEAR ALL RECORDS
+                </button>
+              </div>
+            </div>
+
+            <!-- Certified Hacker Badge Card (Unlocked ONLY when ALL 9 nodes breached) -->
+            <div class="cert-card-container" id="cert-card-container">
+              <div class="cert-card-locked" id="cert-card-locked">
+                <span class="icon">🔒</span>
+                <div class="cert-text">
+                  <h4>TYPESCRIPT MASTER CERTIFICATION (LOCKED)</h4>
+                  <p>Breach all 9 mainframes across Level 1, Level 2, and Level 3 to unlock your Official CyberDeck Master Certification Badge!</p>
+                  <span class="cert-progress" id="cert-progress-text">PROGRESS: 0 / 9 MAINFRAMES BREACHED</span>
+                </div>
+              </div>
+
+              <div class="cert-card-unlocked" id="cert-card-unlocked" style="display:none;">
+                <div class="cert-badge-gold">
+                  <div class="cert-seal">🏆</div>
+                  <div class="cert-details">
+                    <h3>OFFICIAL CYBERDECK CERTIFICATE OF MASTERY</h3>
+                    <p class="cert-subtitle">STRICT TYPESCRIPT & BACKEND DATA MAINFRAME SPECIFICATION</p>
+                    <div class="cert-meta">
+                      <span>ISSUED TO PLAYER: <strong id="cert-player-name">JACK1</strong></span>
+                      <span>STATUS: <strong class="hud-green">100% MASTERED</strong></span>
+                      <span id="cert-issue-date">DATE: 2026-08-13</span>
+                    </div>
+                  </div>
+                  <button class="btn-cyber btn-primary" id="btn-print-cert">🖨️ PRINT / SAVE CERTIFICATE</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Records List -->
+            <div class="records-grid">
+              <div class="record-card">
+                <h3>Breached Mainframes</h3>
+                <div class="record-table-container">
+                  <table class="record-table">
+                    <thead>
+                      <tr>
+                        <th>Node</th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>XP Earned</th>
+                        <th>Time</th>
+                      </tr>
+                    </thead>
+                    <tbody id="records-table-body">
+                      <!-- Populated by JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="record-card">
+                <h3>Saved Code Vault</h3>
+                <div id="saved-solutions-list">
+                  <p class="empty-state">No solved challenges recorded yet. Select a node from the System Map and breach it!</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Footer / Cyber Status Bar -->
+    <footer class="cyber-footer">
+      <div class="footer-left">
+        <span>STATUS: <span class="status-green">ONLINE</span></span>
+        <span class="separator">|</span>
+        <span>SECURITY LEVEL: <span id="sec-level">ALPHA</span></span>
+      </div>
+      <div class="footer-center">
+        <span>TS-HACK // LEARN TYPESCRIPT BY CODING & HACKING</span>
+      </div>
+      <div class="footer-right">
+        <span id="live-clock">00:00:00</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Player Profile Manager Modal -->
+  <div class="modal-overlay" id="profile-modal" style="display:none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>👤 PLAYER PROFILE MANAGER</h3>
+        <button class="btn-text" id="btn-close-profile-modal">✖</button>
+      </div>
+      <div class="modal-body">
+        <p>Create player handles (e.g. <code>jack1</code>, <code>jack2</code>, <code>sarah_hacker</code>) to test yourself from scratch on clean runs without altering your master progress!</p>
+        
+        <div class="form-group" style="margin-top: 1rem;">
+          <label>ACTIVE PROFILES LIST:</label>
+          <div id="profile-buttons-list" class="profile-buttons-grid"></div>
+        </div>
+
+        <div class="form-group" style="margin-top: 1.2rem;">
+          <label for="new-profile-input">CREATE NEW PLAYER ALIAS:</label>
+          <div class="form-row">
+            <input type="text" id="new-profile-input" class="cyber-input" placeholder="e.g. jack2, daughter_run">
+            <button class="btn-cyber btn-primary" id="btn-create-profile">+ CREATE ALIAS</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CodeMirror Vendor Scripts -->
+  <script src="vendor/codemirror.min.js"></script>
+  <script src="vendor/javascript.min.js"></script>
+
+  <!-- Audio Element Placeholder / Audio Context initialized in JS -->
+  <script src="js/audio.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/challenges.js"></script>
+  <script src="js/tsValidator.js"></script>
+  <script src="js/ollama.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/terminal.js"></script>
+  <script src="js/notes.js"></script>
+  <script src="js/kokoro.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

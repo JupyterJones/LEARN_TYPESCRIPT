@@ -58,7 +58,7 @@ Breach legacy JavaScript mainframes across fictional corporate targets (*Daylan 
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/LEARN_TYPESCRIPT.git
+   git clone https://github.com/JupyterJones/LEARN_TYPESCRIPT.git
    cd LEARN_TYPESCRIPT
    ```
 
